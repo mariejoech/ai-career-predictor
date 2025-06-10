@@ -6,7 +6,7 @@
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange.svg)](https://tensorflow.org/)
 [![Flask](https://img.shields.io/badge/Flask-2.x-green.svg)](https://flask.palletsprojects.com/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 
 ## 📋 Table of Contents
 - [Overview](#overview)
@@ -18,8 +18,12 @@
 - [API Documentation](#api-documentation)
 - [Deployment](#deployment)
 - [Monitoring](#monitoring)
+- [Testing](#testing)
+- [Model Performance](#model-performance)
+- [MLOps Lifecycle](#mlops-lifecycle)
+- [Future Improvements](#future-improvements)
 - [Contributing](#contributing)
-- [License](#license)
+
 
 ## 🎯 Overview
 
@@ -40,11 +44,11 @@ Based on Howard Gardner's theory, the system evaluates 8 types of intelligence:
 ## ✨ Features
 
 ### 🤖 AI/ML Features
-- **Deep Neural Network** with 4 hidden layers
+- **Deep Neural Network** with 4 hidden layers and dropout regularization
 - **Multi-class Classification** for 20+ career categories
 - **Confidence Scoring** for prediction reliability
-- **Feature Importance Analysis** using statistical methods
-- **Cross-validation** for robust model evaluation
+- **Intelligent Score Validation** with guided input ranges
+- **Real-time Inference** with optimized model loading
 
 ### 🌐 Web Application
 - **Interactive Web Interface** for easy predictions
@@ -52,48 +56,48 @@ Based on Howard Gardner's theory, the system evaluates 8 types of intelligence:
 - **Responsive Design** for all devices
 - **Input Validation** with guided score ranges
 - **Visual Recommendations** with confidence percentages
+- **Sample Data Testing** for quick demonstration
 
 ### 🔧 MLOps & Production
 - **Dockerized Deployment** for containerization
 - **Real-time Monitoring** with performance tracking
 - **Data Drift Detection** for model reliability
-- **Automated Alerting** via email and Slack
 - **Health Check Endpoints** for system monitoring
 - **Comprehensive Logging** for debugging and analysis
+- **Model Versioning** with proper serialization
 
 ### 📊 Analytics & Visualization
 - **Training History Plots** for model performance
 - **Feature Correlation Heatmaps** for data insights
 - **Career Distribution Charts** for dataset analysis
-- **Confusion Matrix Visualization** for model evaluation
+- **Intelligence Score Distributions** for data understanding
 
 ## 🛠 Technology Stack
 
 ### Backend
 - **Python 3.9+** - Core programming language
 - **TensorFlow/Keras** - Deep learning framework
-- **Flask** - Web framework
+- **Flask** - Web framework with CORS support
 - **Scikit-learn** - Machine learning utilities
-- **Pandas & NumPy** - Data manipulation
-- **Joblib** - Model serialization
+- **Pandas & NumPy** - Data manipulation and analysis
+- **Joblib** - Model serialization and persistence
 
 ### Frontend
 - **HTML5/CSS3** - Modern web standards
 - **JavaScript (ES6+)** - Interactive functionality
-- **Bootstrap** - Responsive design
-- **Chart.js** - Data visualization
+- **Responsive CSS** - Custom styling with gradients and animations
+- **Real-time AJAX** - Asynchronous API communication
 
 ### DevOps & Deployment
-- **Docker** - Containerization
+- **Docker** - Containerization with multi-stage builds
 - **Docker Compose** - Multi-container orchestration
-- **GitHub Actions** - CI/CD pipeline
-- **pytest** - Testing framework
+- **Health Checks** - Automated system monitoring
 
 ### Monitoring & Analytics
 - **Custom Monitoring System** - Performance tracking
-- **JSON Logging** - Structured logging
-- **Matplotlib/Seaborn** - Visualization
-- **psutil** - System monitoring
+- **JSON Logging** - Structured prediction logging
+- **Matplotlib/Seaborn** - Statistical visualization
+- **Data Drift Analysis** - Statistical distribution monitoring
 
 ## 🚀 Installation
 
@@ -210,6 +214,11 @@ curl http://localhost:5000/health
 curl http://localhost:5000/model_info
 ```
 
+#### Test Endpoint
+```bash
+curl http://localhost:5000/api/test
+```
+
 ## 🧠 Model Architecture
 
 ### Neural Network Design
@@ -226,17 +235,18 @@ Output Layer (N careers, Softmax)
 ```
 
 ### Training Configuration
-- **Optimizer**: Adam
+- **Optimizer**: Adam with default learning rate
 - **Loss Function**: Sparse Categorical Crossentropy
 - **Metrics**: Accuracy
 - **Batch Size**: 32
-- **Early Stopping**: Patience of 15 epochs
-- **Validation Split**: 20%
+- **Early Stopping**: Patience of 15 epochs with best weights restoration
+- **Validation Split**: 20% of training data
 
-### Performance Metrics
-- **Test Accuracy**: 85%+ (varies by dataset)
-- **Cross-validation**: 5-fold stratified CV
-- **Evaluation Metrics**: Precision, Recall, F1-score, Cohen's Kappa
+### Data Preprocessing
+- **Feature Scaling**: StandardScaler for intelligence scores
+- **Label Encoding**: Categorical encoding for career labels
+- **Missing Data**: Mean imputation for NaN values
+- **Train/Test Split**: 80/20 stratified split
 
 ## 📚 API Documentation
 
@@ -299,6 +309,19 @@ Get detailed model information.
 }
 ```
 
+#### GET `/api/test`
+Test endpoint with sample data.
+
+**Response:**
+```json
+{
+  "message": "Test prediction successful",
+  "sample_scores": [10.0, 9.5, 13.5, 14.0, 15.0, 12.5, 16.0, 17.0],
+  "predicted_career": "Software Engineer",
+  "top_3_recommendations": {...}
+}
+```
+
 ## 🐳 Deployment
 
 ### Local Development
@@ -313,91 +336,186 @@ docker-compose up --build
 
 ### Production Deployment
 
-#### AWS ECS
+#### Docker with External Database
 ```bash
-# Build and push to ECR
-aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin <account>.dkr.ecr.us-west-2.amazonaws.com
-docker build -t career-predictor .
-docker tag career-predictor:latest <account>.dkr.ecr.us-west-2.amazonaws.com/career-predictor:latest
-docker push <account>.dkr.ecr.us-west-2.amazonaws.com/career-predictor:latest
+# Build production image
+docker build -t career-predictor:prod .
+
+# Run with environment variables
+docker run -p 5000:5000 \
+  -e FLASK_ENV=production \
+  -v $(pwd)/models:/app/models \
+  career-predictor:prod
 ```
 
-#### Google Cloud Run
+#### Cloud Deployment (Example)
 ```bash
-# Deploy to Cloud Run
-gcloud run deploy career-predictor \
-  --image gcr.io/PROJECT-ID/career-predictor \
-  --platform managed \
-  --region us-central1 \
-  --allow-unauthenticated
+# Deploy to cloud platform of choice
+# Configure environment variables
+# Set up persistent storage for models
+# Configure load balancing if needed
 ```
 
 ## 📊 Monitoring
 
-### Real-time Monitoring
-The system includes comprehensive monitoring:
+### Real-time Monitoring Features
+The system includes comprehensive monitoring capabilities:
 
-- **Performance Metrics**: Response time, accuracy, error rates
-- **System Health**: CPU, memory, disk usage
+- **Performance Tracking**: Response time and accuracy monitoring
 - **Data Drift Detection**: Statistical analysis of input distributions
-- **Automated Alerts**: Email and Slack notifications
+- **Prediction Logging**: Detailed logs with timestamps and confidence scores
+- **Health Monitoring**: System status and model availability checks
 
-### Monitoring Dashboard
-Access monitoring data via:
-```bash
-curl http://localhost:5000/monitoring/dashboard
+### Monitoring Components
+
+#### Data Drift Detection
+```python
+# Automatic detection of input distribution changes
+drift_result = monitor.check_data_drift(new_scores)
+if drift_result['drift_detected']:
+    print(f"Drift severity: {drift_result['severity']}")
+```
+
+#### Performance Logging
+```python
+# Comprehensive prediction logging
+monitor.log_prediction(
+    input_scores=scores,
+    prediction=predicted_career,
+    confidence=confidence_score
+)
 ```
 
 ### Log Files
-- `logs/predictions.json` - Prediction history
-- `logs/alerts.json` - System alerts
-- `logs/performance.log` - Performance metrics
+- `logs/predictions.json` - Detailed prediction history
+- Model performance metrics tracked in memory
+- System health status via `/health` endpoint
 
 ## 🧪 Testing
 
-### Run All Tests
-```bash
-# Install test dependencies
-pip install pytest pytest-cov
+### Current Testing Approach
+- **Manual Testing** via `/api/test` endpoint with sample data
+- **Input Validation** with comprehensive range checking
+- **Health Check Monitoring** for system status verification
+- **Sample Data Validation** during model training process
+- **Error Handling** with detailed error messages and stack traces
 
-# Run tests with coverage
-pytest tests/ -v --cov=src/
+### Testing Examples
+```bash
+# Test with sample data
+curl http://localhost:5000/api/test
+
+# Test health status
+curl http://localhost:5000/health
+
+# Test with custom data
+curl -X POST http://localhost:5000/predict \
+  -H "Content-Type: application/json" \
+  -d '{"scores": [10,9,13,14,15,12,16,17]}'
 ```
 
-### Test Categories
-- **Unit Tests**: Individual component testing
-- **Integration Tests**: End-to-end workflow testing  
-- **Performance Tests**: Response time and load testing
-- **API Tests**: Endpoint functionality testing
+### Validation Features
+- Score range validation for each intelligence type
+- Input data type checking
+- Model availability verification
+- Graceful error handling with user-friendly messages
 
 ## 📈 Model Performance
 
-### Evaluation Metrics
-- **Accuracy**: 85%+
-- **Precision**: 83%+ (weighted average)
-- **Recall**: 85%+ (weighted average) 
-- **F1-Score**: 84%+ (weighted average)
-- **Cohen's Kappa**: 0.82+ (substantial agreement)
+### Current Evaluation Approach
+- **Train/Test Split**: 80/20 with stratified sampling to maintain class distribution
+- **Early Stopping**: Prevents overfitting with patience=15 epochs
+- **Validation Monitoring**: Real-time tracking of loss and accuracy during training
+- **Best Weights Restoration**: Automatically restores best performing model weights
 
-### Visualizations
-The training process generates several visualizations:
+### Performance Metrics
+- **Test Accuracy**: Reported after training completion (varies by dataset)
+- **Multi-class Classification**: Successfully handles 20+ career categories
+- **Confidence Scoring**: Probability-based recommendations with percentage confidence
+- **Top-K Predictions**: Returns top 5 career recommendations with confidence scores
+
+### Model Evaluation Features
+- Automatic classification report generation for smaller datasets
+- Confusion matrix analysis capability
+- Training history visualization with accuracy and loss curves
+- Model architecture summary with parameter counting
+
+### Visualizations Generated
 - Training/validation accuracy and loss curves
-- Confusion matrix for model predictions
-- Feature importance analysis
+- Intelligence type correlation heatmap
 - Career distribution in dataset
-- Intelligence type correlations
+- Intelligence score distributions
 
 ## 🔄 MLOps Lifecycle
 
-This project follows the complete MLOps lifecycle:
+This project demonstrates implementation of key MLOps lifecycle stages:
 
-1. **Problem Definition** ✅ Career prediction based on intelligence
-2. **Data Collection & Cleaning** ✅ Multiple intelligence dataset processing  
-3. **Exploratory Data Analysis** ✅ Statistical analysis and visualization
-4. **Model Building & Training** ✅ Deep neural network with hyperparameter tuning
-5. **Evaluation & Tuning** ✅ Cross-validation and performance metrics
-6. **Deployment** ✅ Containerized web application
-7. **Monitoring & Improvement** ✅ Real-time performance tracking
+### 1. Problem Definition ✅
+- **Business Problem**: Career recommendation based on Multiple Intelligence Theory
+- **Success Metrics**: Prediction accuracy and user satisfaction
+- **Target Audience**: Students, career changers, HR professionals
+
+### 2. Data Collection & Cleaning ✅
+- **Data Source**: Excel dataset with intelligence scores and career labels
+- **Preprocessing**: Automatic column detection and NaN value handling
+- **Data Validation**: Score range validation and type checking
+
+### 3. Exploratory Data Analysis ✅
+- **Statistical Analysis**: Correlation analysis between intelligence types
+- **Data Visualization**: Distribution plots and correlation heatmaps
+- **Dataset Insights**: Career distribution and intelligence score patterns
+
+### 4. Model Building & Training ✅
+- **Architecture**: Deep neural network with dropout regularization
+- **Training Strategy**: Early stopping with validation monitoring
+- **Hyperparameters**: Optimized dropout rates and layer sizes
+
+### 5. Evaluation & Validation ✅
+- **Performance Metrics**: Accuracy, classification reports
+- **Validation Strategy**: Train/test split with stratified sampling
+- **Model Selection**: Best weights restoration based on validation loss
+
+### 6. Deployment ✅
+- **Containerization**: Docker deployment with health checks
+- **API Development**: RESTful API with comprehensive endpoints
+- **Web Interface**: User-friendly prediction interface
+
+### 7. Monitoring ✅
+- **Data Drift Detection**: Statistical monitoring of input distributions
+- **Prediction Logging**: Comprehensive logging with structured data
+- **Health Monitoring**: System status and model availability tracking
+
+## 🚀 Future Improvements
+
+### Testing Enhancements
+- **Unit Testing**: Implement pytest framework for component testing
+- **Integration Testing**: End-to-end API testing with automated test suites
+- **Performance Testing**: Load testing and response time optimization
+- **Model Testing**: Automated model validation and regression testing
+
+### Advanced MLOps Features
+- **CI/CD Pipeline**: GitHub Actions for automated testing and deployment
+- **Model Versioning**: MLflow integration for experiment tracking
+- **A/B Testing**: Compare different model versions in production
+- **Automated Retraining**: Trigger retraining based on performance degradation
+
+### Monitoring & Alerting
+- **Email/Slack Alerts**: Automated notifications for system issues
+- **Dashboard Development**: Real-time monitoring dashboard with Grafana
+- **Advanced Metrics**: Business metrics and user engagement tracking
+- **Log Analysis**: Automated log analysis and anomaly detection
+
+### Model Improvements
+- **Cross-Validation**: Implement k-fold cross-validation for robust evaluation
+- **Feature Engineering**: Advanced feature selection and importance analysis
+- **Ensemble Methods**: Combine multiple models for improved accuracy
+- **Hyperparameter Tuning**: Automated optimization with Optuna or similar
+
+### Data & Features
+- **Data Augmentation**: Synthetic data generation for rare career categories
+- **Feature Expansion**: Include demographic and educational features
+- **Real-time Data**: Integration with live career market data
+- **Feedback Loop**: User feedback collection for continuous improvement
 
 ## 🤝 Contributing
 
@@ -411,31 +529,28 @@ Contributions are welcome! Please follow these steps:
 
 ### Development Guidelines
 - Follow PEP 8 style guidelines
-- Add unit tests for new features
-- Update documentation for API changes
+- Add documentation for new features
+- Update README for significant changes
 - Ensure Docker builds successfully
+- Test locally before submitting
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👥 Authors
-
-- **Your Name** - *Initial work* - [@yourusername](https://github.com/yourusername)
 
 ## 🙏 Acknowledgments
 
-- Howard Gardner for Multiple Intelligence Theory
-- AI Bootcamp instructors and mentors
+- Howard Gardner for Multiple Intelligence Theory framework
+- AI Bootcamp instructors and mentors for guidance and support
 - Open source contributors to TensorFlow, Flask, and other libraries
 - The AI/ML community for inspiration and best practices
+- Fellow bootcamp participants for collaboration and feedback
 
-## 📞 Support
 
-For questions or support:
-- **Email**: mariejoechehade@gmail.com
-- **LinkedIn**: [Marie Joe Chehade](www.linkedin.com/in/marie-joe-chehade-04aa842a0)
+## 🎓 Project Context
 
+This project was developed as part of an AI Bootcamp final project, demonstrating:
+- Complete MLOps lifecycle implementation
+- Real-world problem solving with AI
+- Production-ready deployment practices
+- Comprehensive documentation and testing
 
 ---
 
